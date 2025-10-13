@@ -1,0 +1,32 @@
+
+# Rust-specific build artifacts
+/target/
+
+# Cargo cache and build directories
+.cargo/
+Cargo.lock
+
+# Editor and IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Snapshots
+/snapshots/
+
+# Test and benchmark results
+test_results/
+bench_results/
+
+# Log files
+*.log
+/logs/
+
+# Environment variables
+.env
+.env.*
