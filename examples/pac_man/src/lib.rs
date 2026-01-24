@@ -26,7 +26,7 @@ use soroban_sdk::{contract, contracterror, contractimpl, contracttype, Env, Vec}
 // The cougr-core package provides Entity-Component-System patterns optimized
 // for Soroban smart contracts, simplifying on-chain game development.
 #[allow(unused_imports)]
-use cougr_core::prelude::*;
+use cougr_core::*;
 
 // =============================================================================
 // Constants
