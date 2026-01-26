@@ -1,6 +1,7 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, Env, Symbol, Vec, Bytes, contracttype, symbol_short};
+use cougr_core::component::ComponentTrait;
 use cougr_core::*;
+use soroban_sdk::{contract, contractimpl, contracttype, symbol_short, Bytes, Env, Symbol, Vec};
 
 // Game constants
 const GRID_WIDTH: usize = 15;
@@ -50,29 +51,55 @@ impl ComponentTrait for PlayerComponent {
         bytes
     }
 
+    #[allow(unused_variables)]
     fn deserialize(env: &Env, data: &Bytes) -> Option<Self> {
         if data.len() != 24 {
             return None;
         }
         let id = u32::from_be_bytes([
-            data.get(0).unwrap(), data.get(1).unwrap(), data.get(2).unwrap(), data.get(3).unwrap()
+            data.get(0).unwrap(),
+            data.get(1).unwrap(),
+            data.get(2).unwrap(),
+            data.get(3).unwrap(),
         ]);
         let x = i32::from_be_bytes([
-            data.get(4).unwrap(), data.get(5).unwrap(), data.get(6).unwrap(), data.get(7).unwrap()
+            data.get(4).unwrap(),
+            data.get(5).unwrap(),
+            data.get(6).unwrap(),
+            data.get(7).unwrap(),
         ]);
         let y = i32::from_be_bytes([
-            data.get(8).unwrap(), data.get(9).unwrap(), data.get(10).unwrap(), data.get(11).unwrap()
+            data.get(8).unwrap(),
+            data.get(9).unwrap(),
+            data.get(10).unwrap(),
+            data.get(11).unwrap(),
         ]);
         let lives = u32::from_be_bytes([
-            data.get(12).unwrap(), data.get(13).unwrap(), data.get(14).unwrap(), data.get(15).unwrap()
+            data.get(12).unwrap(),
+            data.get(13).unwrap(),
+            data.get(14).unwrap(),
+            data.get(15).unwrap(),
         ]);
         let bomb_capacity = u32::from_be_bytes([
-            data.get(16).unwrap(), data.get(17).unwrap(), data.get(18).unwrap(), data.get(19).unwrap()
+            data.get(16).unwrap(),
+            data.get(17).unwrap(),
+            data.get(18).unwrap(),
+            data.get(19).unwrap(),
         ]);
         let score = u32::from_be_bytes([
-            data.get(20).unwrap(), data.get(21).unwrap(), data.get(22).unwrap(), data.get(23).unwrap()
+            data.get(20).unwrap(),
+            data.get(21).unwrap(),
+            data.get(22).unwrap(),
+            data.get(23).unwrap(),
         ]);
-        Some(Self { id, x, y, lives, bomb_capacity, score })
+        Some(Self {
+            id,
+            x,
+            y,
+            lives,
+            bomb_capacity,
+            score,
+        })
     }
 }
 
@@ -113,26 +140,48 @@ impl ComponentTrait for BombComponent {
         bytes
     }
 
+    #[allow(unused_variables)]
     fn deserialize(env: &Env, data: &Bytes) -> Option<Self> {
         if data.len() != 20 {
             return None;
         }
         let x = i32::from_be_bytes([
-            data.get(0).unwrap(), data.get(1).unwrap(), data.get(2).unwrap(), data.get(3).unwrap()
+            data.get(0).unwrap(),
+            data.get(1).unwrap(),
+            data.get(2).unwrap(),
+            data.get(3).unwrap(),
         ]);
         let y = i32::from_be_bytes([
-            data.get(4).unwrap(), data.get(5).unwrap(), data.get(6).unwrap(), data.get(7).unwrap()
+            data.get(4).unwrap(),
+            data.get(5).unwrap(),
+            data.get(6).unwrap(),
+            data.get(7).unwrap(),
         ]);
         let timer = u32::from_be_bytes([
-            data.get(8).unwrap(), data.get(9).unwrap(), data.get(10).unwrap(), data.get(11).unwrap()
+            data.get(8).unwrap(),
+            data.get(9).unwrap(),
+            data.get(10).unwrap(),
+            data.get(11).unwrap(),
         ]);
         let power = u32::from_be_bytes([
-            data.get(12).unwrap(), data.get(13).unwrap(), data.get(14).unwrap(), data.get(15).unwrap()
+            data.get(12).unwrap(),
+            data.get(13).unwrap(),
+            data.get(14).unwrap(),
+            data.get(15).unwrap(),
         ]);
         let owner_id = u32::from_be_bytes([
-            data.get(16).unwrap(), data.get(17).unwrap(), data.get(18).unwrap(), data.get(19).unwrap()
+            data.get(16).unwrap(),
+            data.get(17).unwrap(),
+            data.get(18).unwrap(),
+            data.get(19).unwrap(),
         ]);
-        Some(Self { x, y, timer, power, owner_id })
+        Some(Self {
+            x,
+            y,
+            timer,
+            power,
+            owner_id,
+        })
     }
 }
 
@@ -167,18 +216,28 @@ impl ComponentTrait for ExplosionComponent {
         bytes
     }
 
+    #[allow(unused_variables)]
     fn deserialize(env: &Env, data: &Bytes) -> Option<Self> {
         if data.len() != 12 {
             return None;
         }
         let x = i32::from_be_bytes([
-            data.get(0).unwrap(), data.get(1).unwrap(), data.get(2).unwrap(), data.get(3).unwrap()
+            data.get(0).unwrap(),
+            data.get(1).unwrap(),
+            data.get(2).unwrap(),
+            data.get(3).unwrap(),
         ]);
         let y = i32::from_be_bytes([
-            data.get(4).unwrap(), data.get(5).unwrap(), data.get(6).unwrap(), data.get(7).unwrap()
+            data.get(4).unwrap(),
+            data.get(5).unwrap(),
+            data.get(6).unwrap(),
+            data.get(7).unwrap(),
         ]);
         let timer = u32::from_be_bytes([
-            data.get(8).unwrap(), data.get(9).unwrap(), data.get(10).unwrap(), data.get(11).unwrap()
+            data.get(8).unwrap(),
+            data.get(9).unwrap(),
+            data.get(10).unwrap(),
+            data.get(11).unwrap(),
         ]);
         Some(Self { x, y, timer })
     }
@@ -187,7 +246,7 @@ impl ComponentTrait for ExplosionComponent {
 // Grid cell types
 #[contracttype]
 #[repr(u8)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum CellType {
     Empty = 0,
     Wall = 1,
@@ -198,20 +257,26 @@ pub enum CellType {
 #[contracttype]
 #[derive(Clone)]
 pub struct GridComponent {
-    pub cells: [CellType; GRID_WIDTH * GRID_HEIGHT],
+    pub cells: Vec<CellType>,
 }
 
 impl GridComponent {
-    pub fn new() -> Self {
-        let mut cells = [CellType::Empty; GRID_WIDTH * GRID_HEIGHT];
+    #[allow(clippy::if_same_then_else)]
+    pub fn new(env: &Env) -> Self {
+        let mut cells = Vec::new(env);
+
+        for _ in 0..(GRID_WIDTH * GRID_HEIGHT) {
+            cells.push_back(CellType::Empty);
+        }
 
         // Initialize walls around the perimeter
         for x in 0..GRID_WIDTH {
             for y in 0..GRID_HEIGHT {
+                let index = y * GRID_WIDTH + x;
                 if x == 0 || x == GRID_WIDTH - 1 || y == 0 || y == GRID_HEIGHT - 1 {
-                    cells[y * GRID_WIDTH + x] = CellType::Wall;
+                    cells.set(index as u32, CellType::Wall);
                 } else if x % 2 == 0 && y % 2 == 0 {
-                    cells[y * GRID_WIDTH + x] = CellType::Wall;
+                    cells.set(index as u32, CellType::Wall);
                 }
             }
         }
@@ -219,10 +284,11 @@ impl GridComponent {
         // Add some destructible blocks and power-ups
         for x in 1..GRID_WIDTH - 1 {
             for y in 1..GRID_HEIGHT - 1 {
-                if (x + y) % 3 == 0 && cells[y * GRID_WIDTH + x] == CellType::Empty {
-                    cells[y * GRID_WIDTH + x] = CellType::Destructible;
-                } else if (x + y) % 7 == 0 && cells[y * GRID_WIDTH + x] == CellType::Empty {
-                    cells[y * GRID_WIDTH + x] = CellType::PowerUp;
+                let index = y * GRID_WIDTH + x;
+                if (x + y) % 3 == 0 && cells.get(index as u32).unwrap() == CellType::Empty {
+                    cells.set(index as u32, CellType::Destructible);
+                } else if (x + y) % 7 == 0 && cells.get(index as u32).unwrap() == CellType::Empty {
+                    cells.set(index as u32, CellType::PowerUp);
                 }
             }
         }
@@ -232,7 +298,9 @@ impl GridComponent {
 
     pub fn get_cell(&self, x: usize, y: usize) -> CellType {
         if x < GRID_WIDTH && y < GRID_HEIGHT {
-            self.cells[y * GRID_WIDTH + x]
+            self.cells
+                .get((y * GRID_WIDTH + x) as u32)
+                .unwrap_or(CellType::Wall)
         } else {
             CellType::Wall
         }
@@ -240,7 +308,7 @@ impl GridComponent {
 
     pub fn set_cell(&mut self, x: usize, y: usize, cell_type: CellType) {
         if x < GRID_WIDTH && y < GRID_HEIGHT {
-            self.cells[y * GRID_WIDTH + x] = cell_type;
+            self.cells.set((y * GRID_WIDTH + x) as u32, cell_type);
         }
     }
 
@@ -248,7 +316,10 @@ impl GridComponent {
         if x < 0 || y < 0 || x >= GRID_WIDTH as i32 || y >= GRID_HEIGHT as i32 {
             return false;
         }
-        matches!(self.get_cell(x as usize, y as usize), CellType::Empty | CellType::PowerUp)
+        matches!(
+            self.get_cell(x as usize, y as usize),
+            CellType::Empty | CellType::PowerUp
+        )
     }
 }
 
@@ -259,7 +330,7 @@ impl ComponentTrait for GridComponent {
 
     fn serialize(&self, env: &Env) -> Bytes {
         let mut bytes = Bytes::new(env);
-        for &cell in &self.cells {
+        for cell in self.cells.iter() {
             bytes.append(&Bytes::from_array(env, &[cell as u8]));
         }
         bytes
@@ -269,15 +340,16 @@ impl ComponentTrait for GridComponent {
         if data.len() != (GRID_WIDTH * GRID_HEIGHT) as u32 {
             return None;
         }
-        let mut cells = [CellType::Empty; GRID_WIDTH * GRID_HEIGHT];
+        let mut cells = Vec::new(env);
         for i in 0..GRID_WIDTH * GRID_HEIGHT {
-            cells[i] = match data.get(i as u32).unwrap() {
+            let cell = match data.get(i as u32).unwrap() {
                 0 => CellType::Empty,
                 1 => CellType::Wall,
                 2 => CellType::Destructible,
                 3 => CellType::PowerUp,
                 _ => return None,
             };
+            cells.push_back(cell);
         }
         Some(Self { cells })
     }
@@ -292,6 +364,7 @@ pub struct GameStateComponent {
 }
 
 impl GameStateComponent {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
             current_tick: 0,
@@ -303,13 +376,16 @@ impl GameStateComponent {
 
 impl ComponentTrait for GameStateComponent {
     fn component_type() -> Symbol {
-        symbol_short!("game_state")
+        symbol_short!("gstate")
     }
 
     fn serialize(&self, env: &Env) -> Bytes {
         let mut bytes = Bytes::new(env);
         bytes.append(&Bytes::from_array(env, &self.current_tick.to_be_bytes()));
-        bytes.append(&Bytes::from_array(env, &[if self.game_over { 1 } else { 0 }]));
+        bytes.append(&Bytes::from_array(
+            env,
+            &[if self.game_over { 1 } else { 0 }],
+        ));
         match self.winner_id {
             Some(id) => {
                 bytes.append(&Bytes::from_array(env, &[1]));
@@ -322,29 +398,41 @@ impl ComponentTrait for GameStateComponent {
         bytes
     }
 
+    #[allow(unused_variables)]
     fn deserialize(env: &Env, data: &Bytes) -> Option<Self> {
         if data.len() < 9 {
             return None;
         }
         let current_tick = u32::from_be_bytes([
-            data.get(0).unwrap(), data.get(1).unwrap(), data.get(2).unwrap(), data.get(3).unwrap()
+            data.get(0).unwrap(),
+            data.get(1).unwrap(),
+            data.get(2).unwrap(),
+            data.get(3).unwrap(),
         ]);
         let game_over = data.get(4).unwrap() != 0;
         let has_winner = data.get(5).unwrap() != 0;
         let winner_id = if has_winner && data.len() >= 13 {
             Some(u32::from_be_bytes([
-                data.get(6).unwrap(), data.get(7).unwrap(), data.get(8).unwrap(), data.get(9).unwrap()
+                data.get(6).unwrap(),
+                data.get(7).unwrap(),
+                data.get(8).unwrap(),
+                data.get(9).unwrap(),
             ]))
         } else {
             None
         };
-        Some(Self { current_tick, game_over, winner_id })
+        Some(Self {
+            current_tick,
+            game_over,
+            winner_id,
+        })
     }
 }
 
 #[contract]
 pub struct BombermanContract;
 
+#[allow(unused_variables)]
 #[contractimpl]
 impl BombermanContract {
     /// Initialize the game world using cougr-core ECS
@@ -363,17 +451,17 @@ impl BombermanContract {
 
         // Create grid component - cougr-core handles component lifecycle
         // Instead of manual storage keys like "grid", we use typed components
-        let grid = GridComponent::new();
+        let grid = GridComponent::new(&env);
         let grid_component = Component::new(
             GridComponent::component_type(), // Component type registration
-            grid.serialize(&env) // Automatic serialization via ComponentTrait
+            grid.serialize(&env),            // Automatic serialization via ComponentTrait
         );
 
         // Create game state component
         let game_state = GameStateComponent::new();
         let game_state_component = Component::new(
             GameStateComponent::component_type(),
-            game_state.serialize(&env)
+            game_state.serialize(&env),
         );
 
         // Spawn grid entity - cougr-core manages entity IDs automatically
@@ -381,7 +469,8 @@ impl BombermanContract {
         let grid_entity_id = spawn_entity(&mut world, Vec::from_array(&env, [grid_component]));
 
         // Spawn game state entity
-        let _game_state_entity_id = spawn_entity(&mut world, Vec::from_array(&env, [game_state_component]));
+        let _game_state_entity_id =
+            spawn_entity(&mut world, Vec::from_array(&env, [game_state_component]));
 
         // In vanilla Soroban, you'd need:
         // env.storage().persistent().set(&Symbol::new(&env, "grid"), &grid_data);
@@ -390,7 +479,7 @@ impl BombermanContract {
 
         // Store the world in contract storage (simplified - in practice you'd serialize the world)
         // For demonstration, we'll return success
-        symbol_short!("initialized")
+        symbol_short!("init")
     }
 
     /// Move a player in the specified direction
@@ -409,7 +498,7 @@ impl BombermanContract {
 
         match direction {
             0..=3 => symbol_short!("moved"),
-            _ => symbol_short!("invalid_dir"),
+            _ => symbol_short!("inv_dir"),
         }
     }
 
@@ -423,7 +512,7 @@ impl BombermanContract {
         // 4. Create bomb entity with BombComponent
         // 5. Save world
 
-        symbol_short!("bomb_placed")
+        symbol_short!("bomb_plc")
     }
 
     /// Advance the game tick - handle timers, explosions, collisions
@@ -442,7 +531,7 @@ impl BombermanContract {
         // Using cougr-core makes this complex logic manageable through queries
         // and component iteration
 
-        symbol_short!("tick_updated")
+        symbol_short!("tick_upd")
     }
 
     /// Get the current score for a player
