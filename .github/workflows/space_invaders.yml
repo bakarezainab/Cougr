@@ -20,11 +20,9 @@ jobs:
     name: Check & Lint
     runs-on: macos-latest 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           components: rustfmt, clippy
@@ -34,51 +32,55 @@ jobs:
         run: cargo fmt --check
         working-directory: examples/space_invaders
 
-      #- name: Run Clippy    
-       # run: cargo clippy -- -D warnings 
-        #working-directory: examples/space_invaders
+      # - name: Run Clippy    
+      #   run: cargo clippy -- -D warnings 
+      #   working-directory: examples/space_invaders
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: check
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           target: wasm32-unknown-unknown
 
-      - name: Install Stellar CLI with Homebrew
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install Stellar CLI
         run: |
           brew update
           brew install stellar-cli
           stellar --version
+
       - name: Build Cargo project
-        run: |
-          source $HOME/.cargo/env
-          cargo build --verbose
+        run: cargo build --verbose
         working-directory: examples/space_invaders
 
       - name: Build Soroban contract
-        run: |
-          source $HOME/.cargo/env
-          stellar contract build --verbose
+        run: stellar contract build --verbose
         working-directory: examples/space_invaders
 
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: check
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           target: wasm32-unknown-unknown
