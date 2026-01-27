@@ -1,5 +1,5 @@
-use soroban_sdk::{Symbol, Vec, Env, Val, IntoVal, TryFromVal, Bytes, contracttype, symbol_short};
 use alloc::string::String;
+use soroban_sdk::{contracttype, symbol_short, Bytes, Env, IntoVal, Symbol, TryFromVal, Val, Vec};
 
 #[contracttype]
 #[derive(Debug, Clone)]
@@ -10,10 +10,18 @@ pub struct Event {
 }
 impl Event {
     pub fn new(event_type: Symbol, data: Bytes) -> Self {
-        Self { event_type, data, timestamp: 0 }
+        Self {
+            event_type,
+            data,
+            timestamp: 0,
+        }
     }
     pub fn with_timestamp(event_type: Symbol, data: Bytes, timestamp: u64) -> Self {
-        Self { event_type, data, timestamp }
+        Self {
+            event_type,
+            data,
+            timestamp,
+        }
     }
     pub fn event_type(&self) -> &Symbol {
         &self.event_type
@@ -33,7 +41,11 @@ pub struct EventReader<'a> {
 }
 impl<'a> EventReader<'a> {
     pub fn new(events: &'a [Event], event_type: Symbol) -> Self {
-        Self { events, event_type, read_index: 0 }
+        Self {
+            events,
+            event_type,
+            read_index: 0,
+        }
     }
     pub fn read(&mut self) -> Option<&Event> {
         while self.read_index < self.events.len() {
@@ -91,7 +103,11 @@ pub struct CollisionEvent {
 }
 impl CollisionEvent {
     pub fn new(entity_a: u64, entity_b: u64, collision_type: Symbol) -> Self {
-        Self { entity_a, entity_b, collision_type }
+        Self {
+            entity_a,
+            entity_b,
+            collision_type,
+        }
     }
     fn to_string(&self) -> String {
         let s = "collision"; // Simplified for now
@@ -117,21 +133,43 @@ impl EventTrait for CollisionEvent {
             return None;
         }
         let entity_a = u64::from_be_bytes([
-            data.get(0)?, data.get(1)?, data.get(2)?, data.get(3)?,
-            data.get(4)?, data.get(5)?, data.get(6)?, data.get(7)?
+            data.get(0)?,
+            data.get(1)?,
+            data.get(2)?,
+            data.get(3)?,
+            data.get(4)?,
+            data.get(5)?,
+            data.get(6)?,
+            data.get(7)?,
         ]);
         let entity_b = u64::from_be_bytes([
-            data.get(8)?, data.get(9)?, data.get(10)?, data.get(11)?,
-            data.get(12)?, data.get(13)?, data.get(14)?, data.get(15)?
+            data.get(8)?,
+            data.get(9)?,
+            data.get(10)?,
+            data.get(11)?,
+            data.get(12)?,
+            data.get(13)?,
+            data.get(14)?,
+            data.get(15)?,
         ]);
         // Deserialize the symbol from its Val representation
         let symbol_bits = u64::from_be_bytes([
-            data.get(16)?, data.get(17)?, data.get(18)?, data.get(19)?,
-            data.get(20)?, data.get(21)?, data.get(22)?, data.get(23)?
+            data.get(16)?,
+            data.get(17)?,
+            data.get(18)?,
+            data.get(19)?,
+            data.get(20)?,
+            data.get(21)?,
+            data.get(22)?,
+            data.get(23)?,
         ]);
         let symbol_val = Val::from_payload(symbol_bits);
         let collision_type: Symbol = Symbol::try_from_val(env, &symbol_val).ok()?;
-        Some(Self { entity_a, entity_b, collision_type })
+        Some(Self {
+            entity_a,
+            entity_b,
+            collision_type,
+        })
     }
 }
 
@@ -144,7 +182,11 @@ pub struct DamageEvent {
 }
 impl DamageEvent {
     pub fn new(target_entity: u64, damage_amount: i32, damage_type: Symbol) -> Self {
-        Self { target_entity, damage_amount, damage_type }
+        Self {
+            target_entity,
+            damage_amount,
+            damage_type,
+        }
     }
     fn to_string(&self) -> String {
         let s = "damage"; // Simplified for now
@@ -170,20 +212,35 @@ impl EventTrait for DamageEvent {
             return None;
         }
         let target_entity = u64::from_be_bytes([
-            data.get(0)?, data.get(1)?, data.get(2)?, data.get(3)?,
-            data.get(4)?, data.get(5)?, data.get(6)?, data.get(7)?
+            data.get(0)?,
+            data.get(1)?,
+            data.get(2)?,
+            data.get(3)?,
+            data.get(4)?,
+            data.get(5)?,
+            data.get(6)?,
+            data.get(7)?,
         ]);
-        let damage_amount = i32::from_be_bytes([
-            data.get(8)?, data.get(9)?, data.get(10)?, data.get(11)?
-        ]);
+        let damage_amount =
+            i32::from_be_bytes([data.get(8)?, data.get(9)?, data.get(10)?, data.get(11)?]);
         // Deserialize the symbol from its Val representation
         let symbol_bits = u64::from_be_bytes([
-            data.get(12)?, data.get(13)?, data.get(14)?, data.get(15)?,
-            data.get(16)?, data.get(17)?, data.get(18)?, data.get(19)?
+            data.get(12)?,
+            data.get(13)?,
+            data.get(14)?,
+            data.get(15)?,
+            data.get(16)?,
+            data.get(17)?,
+            data.get(18)?,
+            data.get(19)?,
         ]);
         let symbol_val = Val::from_payload(symbol_bits);
         let damage_type: Symbol = Symbol::try_from_val(env, &symbol_val).ok()?;
-        Some(Self { target_entity, damage_amount, damage_type })
+        Some(Self {
+            target_entity,
+            damage_amount,
+            damage_type,
+        })
     }
 }
 
@@ -208,11 +265,7 @@ mod tests {
     #[test]
     fn test_collision_event_serialization() {
         let env = Env::default();
-        let collision_event = CollisionEvent::new(
-            123,
-            456,
-            symbol_short!("physical")
-        );
+        let collision_event = CollisionEvent::new(123, 456, symbol_short!("physical"));
 
         let data = collision_event.serialize(&env);
         let deserialized = CollisionEvent::deserialize(&env, &data).unwrap();
@@ -225,11 +278,7 @@ mod tests {
     #[test]
     fn test_damage_event_serialization() {
         let env = Env::default();
-        let damage_event = DamageEvent::new(
-            789,
-            50,
-            symbol_short!("fire")
-        );
+        let damage_event = DamageEvent::new(789, 50, symbol_short!("fire"));
 
         let data = damage_event.serialize(&env);
         let deserialized = DamageEvent::deserialize(&env, &data).unwrap();
@@ -245,4 +294,4 @@ mod tests {
 
     // #[test]
     // fn test_event_writer() { ... }
-} 
+}

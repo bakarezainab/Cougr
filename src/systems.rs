@@ -9,4 +9,4 @@ impl MovementSystem {
             y: (pos.y as i32 + dy).max(0) as u32,
         }
     }
-} 
+}
