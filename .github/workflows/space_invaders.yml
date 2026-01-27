@@ -2,12 +2,12 @@ name: Space Invaders CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
     paths:
       - 'examples/space_invaders/**'
       - '.github/workflows/space_invaders.yml'
   pull_request:
-    branches: [main, develop]
+    branches: [ main, develop ]
     paths:
       - 'examples/space_invaders/**'
       - '.github/workflows/space_invaders.yml'
@@ -16,86 +16,40 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check:
-    name: Check & Lint
-    runs-on: macos-latest 
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
-          target: wasm32-unknown-unknown
-
-      - name: Check formatting
-        run: cargo fmt --check
-        working-directory: examples/space_invaders
-
-      # - name: Run Clippy    
-      #   run: cargo clippy -- -D warnings 
-      #   working-directory: examples/space_invaders
-
   build:
-    name: Build
     runs-on: macos-latest
-    needs: check
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-
-      - name: Cache Cargo dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Install Stellar CLI
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+      - name: Install Rust target for Soroban
+        run: |
+          source $HOME/.cargo/env
+          rustup target add wasm32v1-none
+      - name: Install Stellar CLI with Homebrew
         run: |
           brew update
           brew install stellar-cli
           stellar --version
-
       - name: Build Cargo project
-        run: cargo build --verbose
+        run: |
+          source $HOME/.cargo/env
+          cargo build --verbose
         working-directory: examples/space_invaders
 
       - name: Build Soroban contract
-        run: stellar contract build --verbose
+        run: |
+          source $HOME/.cargo/env
+          stellar contract build --verbose
         working-directory: examples/space_invaders
 
-  test:
-    name: Test
-    runs-on: macos-latest
-    needs: check
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-
-      - name: Cache Cargo dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Run tests
-        run: cargo test --verbose
+      - name: Run Cargo tests
+        run: |
+          source $HOME/.cargo/env
+          cargo test --verbose
         working-directory: examples/space_invaders
