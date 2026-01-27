@@ -1,9 +1,9 @@
-use soroban_sdk::{Symbol, Vec, contracttype};
-use crate::entity::{Entity, EntityId, EntityManager, EntityIterator, EntityIteratorMut};
 use crate::component::{Component, ComponentRegistry};
-use crate::storage::Storage;
+use crate::entity::{Entity, EntityId, EntityIterator, EntityIteratorMut, EntityManager};
+use crate::event::Event;
 use crate::resource::Resource;
-use crate::event::{Event};
+use crate::storage::Storage;
+use soroban_sdk::{contracttype, Symbol, Vec};
 
 /// The main ECS world that contains all entities, components, and systems
 #[derive(Debug, Clone)]
@@ -43,19 +43,20 @@ impl World {
     pub fn spawn(&mut self, components: Vec<Component>) -> Entity {
         let entity_id = self.entities.spawn();
         let mut entity = Entity::new(entity_id);
-        
+
         // Add components to the entity and storage
         for component in components {
             self.add_component_to_entity(entity_id, component);
         }
-        
+
         entity
     }
 
     /// Add a component to an entity
     pub fn add_component_to_entity(&mut self, entity_id: EntityId, component: Component) {
         // Register the component type if not already registered
-        self.components.register_component(component.component_type().clone());
+        self.components
+            .register_component(component.component_type().clone());
         // Add component type to entity
         if let Some(mut entity) = self.entities.get_entity_mut(entity_id) {
             entity.add_component_type(component.component_type().clone());
@@ -67,7 +68,11 @@ impl World {
     }
 
     /// Remove a component from an entity
-    pub fn remove_component_from_entity(&mut self, entity_id: EntityId, component_type: &Symbol) -> bool {
+    pub fn remove_component_from_entity(
+        &mut self,
+        entity_id: EntityId,
+        component_type: &Symbol,
+    ) -> bool {
         // Remove component type from entity
         if let Some(mut entity) = self.entities.get_entity_mut(entity_id) {
             entity.remove_component_type(component_type);
@@ -75,16 +80,22 @@ impl World {
             // This is a limitation of the Soroban SDK
         }
         // Remove component data from storage
-        self.storage.remove_component(entity_id, component_type.clone())
+        self.storage
+            .remove_component(entity_id, component_type.clone())
     }
 
     /// Get a component from an entity
     pub fn get_component(&self, entity_id: EntityId, component_type: &Symbol) -> Option<Component> {
-        self.storage.get_component(entity_id, component_type.clone())
+        self.storage
+            .get_component(entity_id, component_type.clone())
     }
 
     /// Get a mutable reference to a component from an entity
-    pub fn get_component_mut(&mut self, entity_id: EntityId, component_type: &Symbol) -> Option<Component> {
+    pub fn get_component_mut(
+        &mut self,
+        entity_id: EntityId,
+        component_type: &Symbol,
+    ) -> Option<Component> {
         // Since we simplified storage, we'll need to implement this differently
         // For now, return a clone of the component if it exists
         self.get_component(entity_id, component_type)
@@ -260,7 +271,7 @@ impl Default for World {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use soroban_sdk::{Env, symbol_short};
+    use soroban_sdk::{symbol_short, Env};
 
     #[test]
     fn test_world_creation() {
@@ -302,7 +313,7 @@ mod tests {
         let mut world = World::new();
         let entity_id = world.spawn_empty().id();
         assert_eq!(world.entity_count(), 1);
-        
+
         assert!(world.despawn(entity_id));
         assert_eq!(world.entity_count(), 0);
         assert!(!world.exists(entity_id));
@@ -346,4 +357,4 @@ mod tests {
     //     let events = world.get_events(&symbol_short!("testevent"));
     //     assert_eq!(events.len(), 0);
     // }
-} 
+}

@@ -1,4 +1,4 @@
-use soroban_sdk::{Symbol, Bytes, Env, contracttype, symbol_short};
+use soroban_sdk::{contracttype, symbol_short, Bytes, Env, Symbol};
 
 #[contracttype]
 #[derive(Debug, Clone)]
@@ -8,7 +8,10 @@ pub struct Resource {
 }
 impl Resource {
     pub fn new(resource_type: Symbol, data: Bytes) -> Self {
-        Self { resource_type, data }
+        Self {
+            resource_type,
+            data,
+        }
     }
     pub fn resource_type(&self) -> &Symbol {
         &self.resource_type
@@ -38,7 +41,11 @@ pub struct GameState {
 }
 impl GameState {
     pub fn new() -> Self {
-        Self { score: 0, level: 1, is_game_over: false }
+        Self {
+            score: 0,
+            level: 1,
+            is_game_over: false,
+        }
     }
     pub fn increment_score(&mut self, points: i32) {
         self.score += points;
@@ -68,10 +75,24 @@ impl ResourceTrait for GameState {
         if data.len() != 9 {
             return None;
         }
-        let score = i32::from_be_bytes([data.get(0).unwrap(), data.get(1).unwrap(), data.get(2).unwrap(), data.get(3).unwrap()]);
-        let level = i32::from_be_bytes([data.get(4).unwrap(), data.get(5).unwrap(), data.get(6).unwrap(), data.get(7).unwrap()]);
+        let score = i32::from_be_bytes([
+            data.get(0).unwrap(),
+            data.get(1).unwrap(),
+            data.get(2).unwrap(),
+            data.get(3).unwrap(),
+        ]);
+        let level = i32::from_be_bytes([
+            data.get(4).unwrap(),
+            data.get(5).unwrap(),
+            data.get(6).unwrap(),
+            data.get(7).unwrap(),
+        ]);
         let is_game_over = data.get(8).unwrap() != 0;
-        Some(Self { score, level, is_game_over })
+        Some(Self {
+            score,
+            level,
+            is_game_over,
+        })
     }
 }
 impl Default for GameState {
@@ -111,4 +132,4 @@ mod tests {
         assert_eq!(game_state.level, deserialized.level);
         assert_eq!(game_state.is_game_over, deserialized.is_game_over);
     }
-} 
+}
