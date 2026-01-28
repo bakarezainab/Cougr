@@ -1,5 +1,5 @@
-use soroban_sdk::{Symbol, Vec, Env, Val, IntoVal, TryFromVal, FromVal};
 use core::fmt;
+use soroban_sdk::{Env, FromVal, IntoVal, Symbol, TryFromVal, Val, Vec};
 
 /// A unique identifier for an entity in the ECS world
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -77,7 +77,7 @@ impl Entity {
     pub fn remove_component_type(&mut self, component_type: &Symbol) -> bool {
         let mut found = false;
         let mut new_components = Vec::new(&soroban_sdk::Env::default());
-        
+
         for i in 0..self.component_types.len() {
             let ctype = self.component_types.get(i).unwrap();
             if ctype == *component_type {
@@ -86,7 +86,7 @@ impl Entity {
                 new_components.push_back(ctype.clone());
             }
         }
-        
+
         if found {
             self.component_types = new_components;
         }
@@ -137,7 +137,10 @@ impl TryFromVal<Env, Val> for Entity {
         let (id_val, types_val): (Val, Val) = TryFromVal::try_from_val(env, val)?;
         let id: EntityId = TryFromVal::try_from_val(env, &id_val)?;
         let component_types: Vec<Symbol> = TryFromVal::try_from_val(env, &types_val)?;
-        Ok(Entity { id, component_types })
+        Ok(Entity {
+            id,
+            component_types,
+        })
     }
 }
 
@@ -171,7 +174,7 @@ impl EntityManager {
             self.next_id += 1;
             id
         };
-        
+
         let entity_id = EntityId::new(id, 0);
         let entity = Entity::new(entity_id);
         self.entities.push_back(entity);
@@ -259,8 +262,13 @@ impl TryFromVal<Env, Val> for EntityManager {
     type Error = soroban_sdk::ConversionError;
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
-        let (next_id, entities, free_list): (u64, Vec<Entity>, Vec<u64>) = TryFromVal::try_from_val(env, val)?;
-        Ok(EntityManager { next_id, entities, free_list })
+        let (next_id, entities, free_list): (u64, Vec<Entity>, Vec<u64>) =
+            TryFromVal::try_from_val(env, val)?;
+        Ok(EntityManager {
+            next_id,
+            entities,
+            free_list,
+        })
     }
 }
 
@@ -339,4 +347,4 @@ mod tests {
         assert_eq!(manager.entity_count(), 0);
         assert!(!manager.exists(entity_id));
     }
-} 
+}
