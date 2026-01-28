@@ -1,6 +1,5 @@
-use crate::components::{
-    ComponentTrait, Direction, DirectionComponent, Food, Position, SnakeSegment,
-};
+use crate::components::{Direction, DirectionComponent, Food, Position, SnakeSegment};
+use cougr_core::component::ComponentTrait;
 use crate::simple_world::{EntityId, SimpleWorld};
 use soroban_sdk::{symbol_short, Env, Vec};
 
