@@ -139,7 +139,7 @@ jobs:
 
   soroban-build:
     name: Soroban Contract Build
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     defaults:
       run:
         working-directory: examples/snake
@@ -164,12 +164,10 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-soroban-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install Stellar CLI
-        run: cargo install --locked stellar-cli --features opt
+      - name: Install Stellar CLI via Homebrew
+        run: brew install stellar-cli
       - name: Build Soroban contract
-        run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          stellar contract build
+        run: stellar contract build
       - name: Verify WASM output
         run: |
           ls -la target/wasm32*/release/*.wasm
