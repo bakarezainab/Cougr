@@ -1,0 +1,25 @@
+[package]
+name = "geometry_dash"
+version = "0.1.0"
+description = "Geometry Dash - On-Chain Game using Cougr-Core"
+authors = ["Stellar Developer"]
+edition = "2021"
+rust-version = "1.75"
+
+[lib]
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+
+
+[dependencies]
+cougr-core = { git = "https://github.com/salazarsebas/Cougr.git", tag = "v0.0.1" }
+ soroban-sdk = "23.0.2"
+
+[profile.release]
+opt-level = "z"
+overflow-checks = false
+lto = "fat"
+codegen-units = 1
+
+[dev-dependencies]
+# For testing only
