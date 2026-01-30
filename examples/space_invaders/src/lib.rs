@@ -40,7 +40,6 @@ use soroban_sdk::{contract, contractimpl, Env, Vec};
 
 // Import cougr-core ECS framework components
 // These are actively used for entity management and position tracking
-use cougr_core::prelude::*;
 use cougr_core::components::Position as CougrPosition;
 
 // Re-export game state types for external use
@@ -70,7 +69,7 @@ impl SpaceInvadersContract {
         
         // Spawn player ship entity in ECS World
         let ship_entity = world.spawn_empty();
-        let ship_entity_id = ship_entity.id();
+        let _ship_entity_id = ship_entity.id();
         
         // Create initial game state with Ship component
         let state = GameState::new();
@@ -137,7 +136,7 @@ impl SpaceInvadersContract {
         
         // Update ship's EntityPosition component
         let new_x = state.ship_x() + direction;
-        if new_x >= 1 && new_x < GAME_WIDTH - 1 {
+        if (1..GAME_WIDTH - 1).contains(&new_x) {
             state.set_ship_x(new_x);
             env.storage().instance().set(&DataKey::State, &state);
         }
@@ -291,7 +290,7 @@ impl SpaceInvadersContract {
         
         // === INVADER MOVEMENT SYSTEM ===
         // Update invader Position components with wave pattern
-        if state.tick % INVADER_MOVE_INTERVAL == 0 {
+        if state.tick.is_multiple_of(INVADER_MOVE_INTERVAL) {
             let mut should_descend = false;
             let mut should_reverse = false;
             
@@ -334,10 +333,10 @@ impl SpaceInvadersContract {
         
         // === ENEMY SHOOTING SYSTEM ===
         // Spawn enemy bullet entities with Position and Velocity
-        if state.tick % 7 == 0 {
+        if state.tick.is_multiple_of(7) {
             for i in 0..invaders.len() {
                 let invader = invaders.get(i).unwrap();
-                if invader.active && (state.tick / 7) as u32 % INVADER_COLS == i % INVADER_COLS {
+                if invader.active && (state.tick / 7) % INVADER_COLS == i % INVADER_COLS {
                     // Create bullet with Position and Velocity components
                     let bullet = Bullet::enemy_bullet(invader.x(), invader.y() + 1);
                     updated_enemy_bullets.push_back(bullet);
