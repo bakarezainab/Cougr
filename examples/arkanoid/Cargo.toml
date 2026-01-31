@@ -9,11 +9,11 @@ license = "MIT OR Apache-2.0"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-soroban-sdk = "23.0.2"
-cougr-core = { tag = "v0.0.1", git = "https://github.com/salazarsebas/Cougr.git" }
+soroban-sdk = "25.0.0"
+cougr-core = { path = "../../" }
 
 [dev-dependencies]
-soroban-sdk = { version = "23.0.2", features = ["testutils"] }
+soroban-sdk = { version = "25.0.0", features = ["testutils"] }
 
 [profile.release]
 opt-level = "z"
