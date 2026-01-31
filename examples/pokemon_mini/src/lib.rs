@@ -516,7 +516,7 @@ mod tests {
             client.move_player(&1); // Down
         }
 
-        let (x, y, _, in_battle, _) = client.get_player_state();
+        let (_x, _y, _, in_battle, _) = client.get_player_state();
 
         // If we're in battle, skip the water test
         if in_battle {
@@ -524,7 +524,7 @@ mod tests {
         }
 
         // Try to move into water
-        let result = client.move_player(&3); // Right towards water
+        let _result = client.move_player(&3); // Right towards water
 
         // Position x should be less than 5 (blocked by water) or we hit encounter
         let (new_x, _, _, in_battle, _) = client.get_player_state();
@@ -624,7 +624,7 @@ mod tests {
         }
 
         // Get initial enemy HP
-        let (_, player_hp_before, enemy_hp_before, _, _) = client.get_battle_state();
+        let (_, _player_hp_before, enemy_hp_before, _, _) = client.get_battle_state();
 
         // Attack
         let result = client.battle_action(&0);
@@ -764,7 +764,7 @@ mod tests {
 
         // Attack until win
         for _ in 0..20 {
-            let (still_in_battle, _, _, _, result) = client.get_battle_state();
+            let (still_in_battle, _, _, _, _result) = client.get_battle_state();
             if !still_in_battle {
                 break;
             }
