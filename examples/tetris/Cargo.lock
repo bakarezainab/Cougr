@@ -261,6 +261,7 @@ checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
 [[package]]
 name = "cougr-core"
 version = "0.0.1"
+source = "git+https://github.com/salazarsebas/Cougr.git?tag=v0.0.1#37d4f8e3b57a0ea7c27b54072394da0665645890"
 dependencies = [
  "soroban-sdk",
  "wee_alloc",

@@ -28,8 +28,8 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - name: Install Soroban CLI
-        run: cargo install --locked --version 21.0.0 soroban-cli
+      - name: Install Stellar CLI
+        run: cargo install --locked stellar-cli --features opt
 
       - name: Check Formatting
         working-directory: examples/tetris
@@ -41,7 +41,7 @@ jobs:
 
       - name: Build Contract
         working-directory: examples/tetris
-        run: cargo build --target wasm32-unknown-unknown --release
+        run: stellar contract build
 
       - name: Run Tests
         working-directory: examples/tetris

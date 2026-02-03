@@ -1,22 +1,40 @@
 # Tetris On-Chain with Cougr ECS
 
-This example demonstrates a fully functional Tetris game implemented as a Soroban smart contract on the Stellar blockchain. It leverages the `cougr-core` ECS (Entity Component System) framework to manage game state, logic, and entities.
+This example demonstrates a fully functional Tetris game implemented as a Soroban smart contract on the Stellar blockchain. It leverages the **[cougr-core](https://github.com/salazarsebas/Cougr)** ECS (Entity Component System) framework to manage game state, logic, and entities.
 
 ## Overview
 
 The contract implements standard Tetris rules including:
-- 7 Tetromino shapes (I, J, L, O, S, T, Z)
-- Piece rotation (SRS-lite)
-- Line clearing and scoring
-- Level progression
-- Game over detection
 
-It serves as a reference implementation for building complex logic using `cougr-core`.
+* 7 Tetromino shapes (I, J, L, O, S, T, Z)
+* Piece rotation (SRS-lite)
+* Line clearing, scoring, and level progression
+* Game over detection
+
+It serves as a reference implementation for building complex on-chain logic using `cougr-core`.
+
+### Benefits of Cougr ECS
+
+Using `cougr-core` provides structured game development on Stellar:
+
+| Feature | Benefit |
+|---------|---------|
+| **ECS Architecture** | Decouples data (Entities/Components) from logic (Systems), making the codebase modular and easier to test. |
+| **Separation of Concerns** | Movement, collision, and scoring are handled by distinct logical blocks, preventing spaghetti code. |
+| **State Management** | Efficient handling of game state updates during contract invocations. |
+
+## Game Scoring System
+
+| Action | Points (Base) |
+|--------|---------------|
+| Single Line | 100 x Level |
+| Double Line | 300 x Level |
+| Triple Line | 500 x Level |
+| Tetris (4 Lines) | 800 x Level |
 
 ## Prerequisites
 
 - [Rust](https://www.rust-lang.org/tools/install)
-- [Soroban CLI](https://transformers.stellar.org/docs/getting-started/setup#install-the-soroban-cli)
 - [Stellar CLI](https://github.com/stellar/stellar-cli)
 
 ## Setup
@@ -40,7 +58,7 @@ To build the optimized WASM contract:
 stellar contract build
 ```
 
-This will output the `.wasm` file in `target/wasm32-unknown-unknown/release/`.
+The output will be in `target/wasm32-unknown-unknown/release/tetris.wasm`.
 
 ## Testing
 
@@ -50,7 +68,16 @@ Run the comprehensive test suite:
 cargo test
 ```
 
-## Deployment (Testnet)
+## Live Deployment (Testnet)
+
+The contract is deployed on the Stellar Testnet. You can interact with it using the CLI or a block explorer.
+
+| Contract ID | Network | Explorer Link |
+|-------------|---------|---------------|
+| `CBWENGWFZHPNJPIHQAHXE5K34BGV2G5MOQIQ24PE44M6P42YULMQZYSF` | Testnet | [View on Explorer](https://lab.stellar.org/r/testnet/contract/CBWENGWFZHPNJPIHQAHXE5K34BGV2G5MOQIQ24PE44M6P42YULMQZYSF) |
+
+
+### Deploying Your Own
 
 1. **Configure Identity:**
    ```bash
@@ -65,9 +92,8 @@ cargo test
      --source alice \
      --network testnet
    ```
-   *Save the returned Contract ID (e.g., `CA...`).*
 
-3. **Interact:**
+3. **Interact Example:**
 
    *Initialize Game:*
    ```bash
@@ -77,26 +103,6 @@ cargo test
      --network testnet \
      -- \
      init_game
-   ```
-
-   *Move Left:*
-   ```bash
-   stellar contract invoke \
-     --id <CONTRACT_ID> \
-     --source alice \
-     --network testnet \
-     -- \
-     move_left
-   ```
-
-   *Get State:*
-   ```bash
-   stellar contract invoke \
-     --id <CONTRACT_ID> \
-     --source alice \
-     --network testnet \
-     -- \
-     get_state
    ```
 
 ## Documentation
