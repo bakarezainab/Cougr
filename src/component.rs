@@ -1,5 +1,7 @@
-use soroban_sdk::{Symbol, Bytes, Env, contracttype, symbol_short, Val, IntoVal, TryFromVal, FromVal};
 use alloc::vec::Vec;
+use soroban_sdk::{
+    contracttype, symbol_short, Bytes, Env, FromVal, IntoVal, Symbol, TryFromVal, Val,
+};
 
 /// A unique identifier for a component type
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -43,8 +45,6 @@ impl Default for ComponentStorage {
         Self::Table
     }
 }
-
-
 
 #[contracttype]
 #[derive(Debug, Clone)]
@@ -110,7 +110,7 @@ impl ComponentRegistry {
                 return *id;
             }
         }
-        
+
         let id = ComponentId::new(self.next_id);
         self.next_id += 1;
         self.components.push((component_type, id));
@@ -159,8 +159,6 @@ impl Default for ComponentRegistry {
     }
 }
 
-
-
 pub trait ComponentTrait {
     fn component_type() -> Symbol;
     fn serialize(&self, env: &Env) -> Bytes;
@@ -199,8 +197,18 @@ impl ComponentTrait for Position {
         if data.len() != 8 {
             return None;
         }
-        let x = i32::from_be_bytes([data.get(0).unwrap(), data.get(1).unwrap(), data.get(2).unwrap(), data.get(3).unwrap()]);
-        let y = i32::from_be_bytes([data.get(4).unwrap(), data.get(5).unwrap(), data.get(6).unwrap(), data.get(7).unwrap()]);
+        let x = i32::from_be_bytes([
+            data.get(0).unwrap(),
+            data.get(1).unwrap(),
+            data.get(2).unwrap(),
+            data.get(3).unwrap(),
+        ]);
+        let y = i32::from_be_bytes([
+            data.get(4).unwrap(),
+            data.get(5).unwrap(),
+            data.get(6).unwrap(),
+            data.get(7).unwrap(),
+        ]);
         Some(Self { x, y })
     }
 }
@@ -232,8 +240,18 @@ impl ComponentTrait for Velocity {
         if data.len() != 8 {
             return None;
         }
-        let x = i32::from_be_bytes([data.get(0).unwrap(), data.get(1).unwrap(), data.get(2).unwrap(), data.get(3).unwrap()]);
-        let y = i32::from_be_bytes([data.get(4).unwrap(), data.get(5).unwrap(), data.get(6).unwrap(), data.get(7).unwrap()]);
+        let x = i32::from_be_bytes([
+            data.get(0).unwrap(),
+            data.get(1).unwrap(),
+            data.get(2).unwrap(),
+            data.get(3).unwrap(),
+        ]);
+        let y = i32::from_be_bytes([
+            data.get(4).unwrap(),
+            data.get(5).unwrap(),
+            data.get(6).unwrap(),
+            data.get(7).unwrap(),
+        ]);
         Some(Self { x, y })
     }
 }
@@ -282,8 +300,8 @@ mod tests {
         let position = Position::new(100, 200);
         let data = position.serialize(&env);
         let deserialized = Position::deserialize(&env, &data).unwrap();
-        
+
         assert_eq!(position.x, deserialized.x);
         assert_eq!(position.y, deserialized.y);
     }
-} 
+}

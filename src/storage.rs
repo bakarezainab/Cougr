@@ -1,6 +1,6 @@
-use soroban_sdk::{Symbol, Vec, Bytes, contracttype, Env};
-use crate::entity::EntityId;
 use crate::component::Component;
+use crate::entity::EntityId;
+use soroban_sdk::{contracttype, Bytes, Env, Symbol, Vec};
 
 #[contracttype]
 #[derive(Debug, Clone)]
@@ -24,7 +24,8 @@ impl Storage {
     pub fn add_component(&mut self, entity_id: EntityId, component: Component) {
         self.remove_component(entity_id, component.component_type().clone());
         self.entity_ids.push_back(entity_id.id());
-        self.component_types.push_back(component.component_type().clone());
+        self.component_types
+            .push_back(component.component_type().clone());
         self.component_data.push_back(component.data().clone());
     }
 
@@ -117,4 +118,4 @@ impl Default for Storage {
 }
 
 pub type TableStorage = Storage;
-pub type SparseStorage = Storage; 
+pub type SparseStorage = Storage;

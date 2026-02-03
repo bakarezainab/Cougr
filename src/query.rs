@@ -1,7 +1,7 @@
-use soroban_sdk::{Symbol, Vec};
-use alloc::boxed::Box;
-use crate::world::World;
 use crate::entity::EntityId;
+use crate::world::World;
+use alloc::boxed::Box;
+use soroban_sdk::{Symbol, Vec};
 
 /// A query for entities with specific components
 #[derive(Debug, Clone)]
@@ -38,21 +38,25 @@ impl Query {
     pub fn execute(&self, world: &World) -> Vec<EntityId> {
         let env = soroban_sdk::Env::default();
         let mut results = Vec::new(&env);
-        
+
         for entity in world.iter_entities() {
             // Check if entity has all required components
-            let has_required = self.required_components.iter()
+            let has_required = self
+                .required_components
+                .iter()
                 .all(|component_type| entity.has_component(&component_type));
-            
+
             // Check if entity has none of the excluded components
-            let has_excluded = self.excluded_components.iter()
+            let has_excluded = self
+                .excluded_components
+                .iter()
                 .any(|component_type| entity.has_component(&component_type));
-            
+
             if has_required && !has_excluded {
                 results.push_back(entity.id());
             }
         }
-        
+
         results
     }
 
@@ -300,20 +304,20 @@ impl QueryFilter for AnyFilter {
 pub fn query_with_filter(world: &World, filter: &dyn QueryFilter) -> Vec<EntityId> {
     let env = soroban_sdk::Env::default();
     let mut results = Vec::new(&env);
-    
+
     for entity in world.iter_entities() {
         if filter.matches(world, entity.id()) {
             results.push_back(entity.id());
         }
     }
-    
+
     results
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use soroban_sdk::{Env, symbol_short};
+    use soroban_sdk::{symbol_short, Env};
 
     #[test]
     fn test_query_creation() {
@@ -326,7 +330,7 @@ mod tests {
         let query = Query::new()
             .with_component(symbol_short!("position"))
             .with_component(symbol_short!("velocity"));
-        
+
         assert!(!query.is_empty());
         assert_eq!(query.required_components.len(), 2);
     }
@@ -337,7 +341,7 @@ mod tests {
             .with_component(symbol_short!("position"))
             .without_component(symbol_short!("dead"))
             .build();
-        
+
         assert!(!query.is_empty());
         assert_eq!(query.required_components.len(), 1);
         assert_eq!(query.excluded_components.len(), 1);
@@ -347,7 +351,7 @@ mod tests {
     fn test_query_state() {
         let query = Query::new().with_component(symbol_short!("position"));
         let mut query_state = QueryState::new(query);
-        
+
         let world = World::new();
         let results = query_state.execute(&world);
         assert_eq!(results.len(), 0);
@@ -358,7 +362,7 @@ mod tests {
     fn test_with_component_filter() {
         let filter = WithComponent::new(symbol_short!("position"));
         let world = World::new();
-        
+
         // Since we have no entities with position components, this should return false
         let entity_id = EntityId::new(1, 0);
         assert!(!filter.matches(&world, entity_id));
@@ -368,7 +372,7 @@ mod tests {
     fn test_without_component_filter() {
         let filter = WithoutComponent::new(symbol_short!("position"));
         let world = World::new();
-        
+
         // Since we have no entities with position components, this should return true
         let entity_id = EntityId::new(1, 0);
         assert!(filter.matches(&world, entity_id));
@@ -404,8 +408,8 @@ mod tests {
     fn test_query_with_filter() {
         let filter = WithComponent::new(symbol_short!("position"));
         let world = World::new();
-        
+
         let results = query_with_filter(&world, &filter);
         assert_eq!(results.len(), 0);
     }
-} 
+}

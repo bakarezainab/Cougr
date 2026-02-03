@@ -1,0 +1,19 @@
+# Build artifacts
+target/
+Cargo.lock
+
+# Test snapshots
+test_snapshots/
+
+# Stellar CLI local config
+.stellar/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
