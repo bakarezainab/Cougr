@@ -1,47 +1,91 @@
-# Geometry Dash - On-Chain Game Example ✅
+# Cougr-Core Examples
 
-✅ **COMPLETE AND WORKING** - Successfully builds and tests
+This directory contains practical examples demonstrating how to use the **cougr-core** ECS framework to build on-chain games on the Stellar blockchain via Soroban.
 
+## Available Examples
 
-A complete implementation of Geometry Dash game logic designed for on-chain execution on Stellar Soroban using Cougr-Core patterns.
+### 🎮 Tetris - On-Chain Game
 
-## Status
+A fully functional Tetris game implementation as a Soroban smart contract.
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| Source Code | ✅ Complete | 300+ lines, fully implemented |
-| Tests | ✅ 8 Comprehensive Tests | All game mechanics covered |
-| Build | ✅ Working | `cargo build` and `cargo test` pass |
-| No Std | ✅ Compatible | Ready for Soroban/WASM |
-| Architecture | ✅ Complete | ECS patterns demonstrated |
+**Location:** `examples/tetris/`
 
-## 🚀 Quick Start
+**Features:**
+- Complete Tetris game logic (7 tetromino types, rotation, collision, scoring)
+- Integration with cougr-core ECS framework
+- Efficient on-chain state management
+- Comprehensive test coverage
+- Deployable to Stellar Testnet
 
+**Quick Start:**
 ```bash
-# Build and test
-./build.sh
-
-# Or manually
+cd tetris
 cargo test
-cargo build --release
+stellar contract build
+```
 
+**[View Full Documentation →](./tetris/README.md)**
 
+---
 
-Examples of cougr-core package
+## Getting Started
 
+All examples use cougr-core as a dependency:
 
-Import:
-```rust
+```toml
 [dependencies]
 cougr-core = {tag = "v0.0.1", git = "https://github.com/salazarsebas/Cougr.git"}
 ```
 
+### Prerequisites
 
-```text
-geometry_dash/
-├── Cargo.toml          # Package configuration
-├── src/
-│   └── lib.rs         # Complete game implementation (250+ lines)
-├── build.sh           # Build and test script
-└── README.md          # Documentation
+1. **Rust** (1.70.0+)
+   ```bash
+   rustup update
+   ```
+
+2. **Stellar CLI**
+   ```bash
+   cargo install --locked stellar-cli
+   ```
+
+3. **WASM Target**
+   ```bash
+   rustup target add wasm32-unknown-unknown
+   ```
+
+### Building Examples
+
+Each example can be built independently:
+
+```bash
+cd <example-name>
+cargo build
+stellar contract build
 ```
+
+### Testing Examples
+
+Run tests for any example:
+
+```bash
+cd <example-name>
+cargo test
+```
+
+## Contributing
+
+Want to add a new example? Great! Consider these game types:
+
+- Puzzle games (Sudoku, 2048, etc.)
+- Turn-based strategy
+- Card games
+- Board games (Chess, Checkers, etc.)
+
+Follow the structure of the Tetris example for consistency.
+
+## Resources
+
+- [Cougr-Core Documentation](../README.md)
+- [Soroban Documentation](https://developers.stellar.org/docs/build/smart-contracts)
+- [Stellar CLI Guide](https://developers.stellar.org/docs/tools/cli)
