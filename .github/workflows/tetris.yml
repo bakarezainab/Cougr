@@ -1,0 +1,45 @@
+name: Tetris Smart Contract CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: stable
+    
+    - name: Add WASM target
+      run: rustup target add wasm32-unknown-unknown
+    
+    - name: Install Stellar CLI
+      run: cargo install --locked stellar-cli --features opt
+    
+    - name: Lint
+      working-directory: ./examples/tetris
+      run: cargo fmt --check
+    
+    - name: Clippy
+      working-directory: ./examples/tetris
+      run: cargo clippy -- -D warnings
+    
+    - name: Build
+      working-directory: ./examples/tetris
+      run: cargo build --release
+    
+    - name: Test
+      working-directory: ./examples/tetris
+      run: cargo test
+    
+    - name: Build Soroban Contract
+      working-directory: ./examples/tetris
+      run: stellar contract build
