@@ -1,8 +1,8 @@
-use soroban_sdk::{Symbol, Vec, symbol_short};
-use crate::entity::{EntityId, Entity};
-use crate::world::World;
 use crate::component::Component;
-use crate::event::{EventTrait, DamageEvent};
+use crate::entity::{Entity, EntityId};
+use crate::event::{DamageEvent, EventTrait};
+use crate::world::World;
+use soroban_sdk::{symbol_short, Symbol, Vec};
 
 /// A system in the ECS world
 pub trait System {
@@ -232,10 +232,8 @@ impl System for MovementSystem {
 
     fn run(&mut self, world: &mut World, _input: Self::In) -> Self::Out {
         // Example: Find all entities with position and velocity components
-        let entities_with_movement = world.query_entities(&[
-            symbol_short!("position"),
-            symbol_short!("velocity"),
-        ]);
+        let entities_with_movement =
+            world.query_entities(&[symbol_short!("position"), symbol_short!("velocity")]);
 
         for i in 0..entities_with_movement.len() {
             let entity_id = entities_with_movement.get(i).unwrap();
@@ -256,10 +254,8 @@ impl System for CollisionSystem {
     type Out = ();
 
     fn run(&mut self, world: &mut World, _input: Self::In) -> Self::Out {
-        let entities_with_collision = world.query_entities(&[
-            symbol_short!("position"),
-            symbol_short!("collision"),
-        ]);
+        let entities_with_collision =
+            world.query_entities(&[symbol_short!("position"), symbol_short!("collision")]);
 
         for i in 0..entities_with_collision.len() {
             for j in (i + 1)..entities_with_collision.len() {
@@ -273,10 +269,7 @@ impl System for CollisionSystem {
                 );
                 let env = soroban_sdk::Env::default();
                 let event_data = collision_event.serialize(&env);
-                let event = crate::event::Event::new(
-                    symbol_short!("collision"),
-                    event_data,
-                );
+                let event = crate::event::Event::new(symbol_short!("collision"), event_data);
                 world.send_event(event);
             }
         }
@@ -345,7 +338,7 @@ mod tests {
             // Simple system that just returns the input
             input
         });
-        
+
         let mut world = World::new();
         let result = system.run(&mut world, 42);
         assert_eq!(result, 42);
@@ -355,7 +348,7 @@ mod tests {
     fn test_movement_system() {
         let mut system = MovementSystem;
         let mut world = World::new();
-        
+
         // This should run without errors
         system.run(&mut world, ());
     }
@@ -364,8 +357,8 @@ mod tests {
     fn test_collision_system() {
         let mut system = CollisionSystem;
         let mut world = World::new();
-        
+
         // This should run without errors
         system.run(&mut world, ());
     }
-} 
+}

@@ -3,37 +3,35 @@
 
 extern crate alloc;
 
-use soroban_sdk::{
-    symbol_short, Symbol, Vec, Bytes,
-};
+use soroban_sdk::{symbol_short, Bytes, Symbol, Vec};
 
 // Global allocator for WASM
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 // Core ECS types adapted for Soroban
-pub mod entity;
 pub mod component;
-pub mod world;
-pub mod system;
-pub mod storage;
+pub mod components;
+pub mod entity;
+pub mod event;
 pub mod query;
 pub mod resource;
-pub mod event;
-pub mod components;
+pub mod storage;
+pub mod system;
 pub mod systems;
+pub mod world;
 
 // Re-export core types
-pub use entity::{Entity, EntityId};
 pub use component::{Component, ComponentId, ComponentStorage};
-pub use world::World;
-pub use system::{System, SystemParam, IntoSystem};
-pub use storage::{Storage, TableStorage, SparseStorage};
+pub use components::Position;
+pub use entity::{Entity, EntityId};
+pub use event::{Event, EventReader, EventWriter};
 pub use query::{Query, QueryState};
 pub use resource::Resource;
-pub use event::{Event, EventReader, EventWriter};
-pub use components::Position;
+pub use storage::{SparseStorage, Storage, TableStorage};
+pub use system::{IntoSystem, System, SystemParam};
 pub use systems::MovementSystem;
+pub use world::World;
 
 // Library functions for ECS operations
 pub fn create_world() -> World {
@@ -54,11 +52,19 @@ pub fn remove_component(world: &mut World, entity_id: EntityId, component_type: 
     world.remove_component_from_entity(entity_id, &component_type)
 }
 
-pub fn get_component(world: &World, entity_id: EntityId, component_type: Symbol) -> Option<Component> {
+pub fn get_component(
+    world: &World,
+    entity_id: EntityId,
+    component_type: Symbol,
+) -> Option<Component> {
     world.get_component(entity_id, &component_type)
 }
 
-pub fn query_entities(world: &World, component_types: Vec<Symbol>, env: &soroban_sdk::Env) -> Vec<EntityId> {
+pub fn query_entities(
+    world: &World,
+    component_types: Vec<Symbol>,
+    env: &soroban_sdk::Env,
+) -> Vec<EntityId> {
     // Since we can't easily convert Vec<Symbol> to &[Symbol] in Soroban,
     // we'll need to restructure this. For now, return empty result.
     Vec::new(env)
@@ -67,21 +73,21 @@ pub fn query_entities(world: &World, component_types: Vec<Symbol>, env: &soroban
 // Predule for common types
 pub mod prelude {
     pub use super::{
-        entity::{Entity, EntityId},
         component::{Component, ComponentId, ComponentStorage},
-        world::World,
-        system::{System, SystemParam, IntoSystem},
-        storage::{Storage, TableStorage, SparseStorage},
+        entity::{Entity, EntityId},
+        event::{Event, EventReader, EventWriter},
         query::{Query, QueryState},
         resource::Resource,
-        event::{Event, EventReader, EventWriter},
+        storage::{SparseStorage, Storage, TableStorage},
+        system::{IntoSystem, System, SystemParam},
+        world::World,
     };
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use soroban_sdk::{Env, testutils::{Address as _,}};
+    use soroban_sdk::{testutils::Address as _, Env};
 
     #[test]
     fn test_world_creation() {
@@ -97,4 +103,4 @@ mod tests {
         let entity = world.spawn_empty();
         assert_eq!(world.entity_count(), 1);
     }
-} 
+}
