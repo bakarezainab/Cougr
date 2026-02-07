@@ -9,11 +9,11 @@ description = "Pokémon Mini on-chain game example using cougr-core ECS framewor
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-cougr-core = { tag = "v0.0.1", git = "https://github.com/salazarsebas/Cougr.git" }
-soroban-sdk = "23.0.2"
+cougr-core = { branch = "main", git = "https://github.com/salazarsebas/Cougr.git" }
+soroban-sdk = "25.1.0"
 
 [dev-dependencies]
-soroban-sdk = { version = "23.0.2", features = ["testutils"] }
+soroban-sdk = { version = "25.1.0", features = ["testutils"] }
 
 [profile.release]
 opt-level = "z"

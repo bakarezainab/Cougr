@@ -7,11 +7,11 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-soroban-sdk = "23.0.2"
-cougr-core = { tag = "v0.0.1", git = "https://github.com/salazarsebas/Cougr.git" }
+soroban-sdk = "25.1.0"
+cougr-core = { branch = "main", git = "https://github.com/salazarsebas/Cougr.git" }
 
 [dev-dependencies]
-soroban-sdk = { version = "23.0.2", features = ["testutils"] }
+soroban-sdk = { version = "25.1.0", features = ["testutils"] }
 
 [profile.release]
 opt-level = "z"

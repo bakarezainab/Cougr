@@ -1,16 +1,16 @@
-name: Asteroids CI
+name: Tic Tac Toe CI
 
 on:
   push:
     branches: [main, develop]
     paths:
-      - 'examples/asteroids/**'
-      - '.github/workflows/asteroids.yml'
+      - 'examples/tic_tac_toe/**'
+      - '.github/workflows/tic_tac_toe.yml'
   pull_request:
     branches: [main, develop]
     paths:
-      - 'examples/asteroids/**'
-      - '.github/workflows/asteroids.yml'
+      - 'examples/tic_tac_toe/**'
+      - '.github/workflows/tic_tac_toe.yml'
 
 env:
   CARGO_TERM_COLOR: always
@@ -21,7 +21,7 @@ jobs:
     runs-on: macos-latest
     defaults:
       run:
-        working-directory: examples/asteroids
+        working-directory: examples/tic_tac_toe
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +34,7 @@ jobs:
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: examples/asteroids
+          workspaces: examples/tic_tac_toe
 
       - name: Check formatting
         run: cargo fmt --check

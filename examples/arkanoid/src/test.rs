@@ -16,7 +16,7 @@ fn test_init_game() {
     assert_eq!(state.ball_vy, -1);
     assert_eq!(state.score, 0);
     assert_eq!(state.lives, 3);
-    assert_eq!(state.game_active, true);
+    assert!(state.game_active);
     assert_eq!(state.bricks_remaining, 50); // 10 cols * 5 rows
 }
 
@@ -234,8 +234,8 @@ fn test_game_over_no_lives() {
     let state = client.get_game_state();
     // Game should end when lives reach 0
     assert_eq!(state.lives, 0);
-    assert_eq!(state.game_active, false);
-    assert_eq!(client.check_game_over(), true);
+    assert!(!state.game_active);
+    assert!(client.check_game_over());
 }
 
 #[test]
@@ -263,7 +263,7 @@ fn test_check_game_over() {
     client.init_game();
 
     let game_over = client.check_game_over();
-    assert_eq!(game_over, false);
+    assert!(!game_over);
 }
 
 #[test]
