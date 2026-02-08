@@ -1,10 +1,9 @@
 [package]
-name = "pac_man"
+name = "arkanoid"
 version = "0.1.0"
 edition = "2021"
-description = "Pac-Man on-chain game example using Cougr-Core for Stellar/Soroban"
+description = "Arkanoid on-chain game using Cougr-Core ECS framework on Stellar Soroban"
 license = "MIT OR Apache-2.0"
-rust-version = "1.70.0"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

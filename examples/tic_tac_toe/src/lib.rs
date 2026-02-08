@@ -1,7 +1,9 @@
 #![no_std]
 
 use cougr_core::component::ComponentTrait;
-use soroban_sdk::{contract, contractimpl, contracttype, symbol_short, Address, Bytes, Env, Symbol, Vec};
+use soroban_sdk::{
+    contract, contractimpl, contracttype, symbol_short, Address, Bytes, Env, Symbol, Vec,
+};
 
 /// Board component - stores the 3x3 game board state (0=Empty, 1=X, 2=O)
 #[contracttype]
@@ -72,7 +74,11 @@ pub struct PlayerComponent {
 
 impl PlayerComponent {
     pub fn new(player_x: Address, player_o: Address, entity_id: u32) -> Self {
-        Self { player_x, player_o, entity_id }
+        Self {
+            player_x,
+            player_o,
+            entity_id,
+        }
     }
 }
 
@@ -105,7 +111,10 @@ impl ComponentTrait for GameStateComponent {
     fn serialize(&self, env: &Env) -> Bytes {
         let mut bytes = Bytes::new(env);
         bytes.append(&Bytes::from_array(env, &self.entity_id.to_be_bytes()));
-        bytes.append(&Bytes::from_array(env, &[if self.is_x_turn { 1 } else { 0 }]));
+        bytes.append(&Bytes::from_array(
+            env,
+            &[if self.is_x_turn { 1 } else { 0 }],
+        ));
         bytes.append(&Bytes::from_array(env, &self.move_count.to_be_bytes()));
         bytes.append(&Bytes::from_array(env, &self.status.to_be_bytes()));
         bytes
@@ -134,7 +143,12 @@ impl ComponentTrait for GameStateComponent {
             data.get(11).unwrap(),
             data.get(12).unwrap(),
         ]);
-        Some(Self { is_x_turn, move_count, status, entity_id })
+        Some(Self {
+            is_x_turn,
+            move_count,
+            status,
+            entity_id,
+        })
     }
 }
 
@@ -283,7 +297,11 @@ impl TicTacToeContract {
             .get(&WORLD_KEY)
             .unwrap_or_else(|| panic!("Game not initialized"));
 
-        Self::init_game(env, world_state.players.player_x, world_state.players.player_o)
+        Self::init_game(
+            env,
+            world_state.players.player_x,
+            world_state.players.player_o,
+        )
     }
 
     fn validation_system(world: &ECSWorldState, player: &Address, position: u32) -> (bool, Symbol) {
@@ -318,7 +336,11 @@ impl TicTacToeContract {
     }
 
     fn execution_system(world: &mut ECSWorldState, position: u32) {
-        let cell_value = if world.game_state.is_x_turn { 1u32 } else { 2u32 };
+        let cell_value = if world.game_state.is_x_turn {
+            1u32
+        } else {
+            2u32
+        };
         world.board.cells.set(position, cell_value);
         world.game_state.move_count += 1;
     }
@@ -327,9 +349,14 @@ impl TicTacToeContract {
         let cells = &world.board.cells;
 
         let patterns: [[u32; 3]; 8] = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8],
-            [0, 3, 6], [1, 4, 7], [2, 5, 8],
-            [0, 4, 8], [2, 4, 6],
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
         ];
 
         for pattern in patterns.iter() {

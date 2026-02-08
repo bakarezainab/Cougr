@@ -1,16 +1,16 @@
-name: Snake CI
+name: Arkanoid CI
 
 on:
   push:
     branches: [main, develop]
     paths:
-      - 'examples/snake/**'
-      - '.github/workflows/snake.yml'
+      - 'examples/arkanoid/**'
+      - '.github/workflows/arkanoid.yml'
   pull_request:
     branches: [main, develop]
     paths:
-      - 'examples/snake/**'
-      - '.github/workflows/snake.yml'
+      - 'examples/arkanoid/**'
+      - '.github/workflows/arkanoid.yml'
 
 env:
   CARGO_TERM_COLOR: always
@@ -21,7 +21,7 @@ jobs:
     runs-on: macos-latest
     defaults:
       run:
-        working-directory: examples/snake
+        working-directory: examples/arkanoid
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +34,7 @@ jobs:
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: examples/snake
+          workspaces: examples/arkanoid
 
       - name: Check formatting
         run: cargo fmt --check
